@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tmdb_api/tmdb_api.dart';
 
+import 'api_key.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -12,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primaryColor: Colors.green,
+        primaryColor: const Color.fromARGB(255, 0, 0, 0),
         brightness: Brightness.dark,
         useMaterial3: true,
       ),
@@ -30,6 +32,36 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  List trendingMovies = new List.empty();
+  List topMovies = new List.empty();
+  List popularMovies = new List.empty();
+
+  @override
+  initState(){
+    loadMovies();
+    super.initState();
+  }
+  
+  loadMovies() async {
+    TMDB tmdbWithCustomLogs = TMDB(
+    ApiKeys(tmdbApiKey, tmdbV4Key),
+    logConfig: const ConfigLogger(
+      showLogs: true,//must be true than only all other logs will be shown
+      showErrorLogs: true,
+      ),
+    );
+
+    Map resultTrending = await tmdbWithCustomLogs.v3.trending.getTrending(mediaType: MediaType.all, timeWindow: TimeWindow.day);
+    Map resultTop = await tmdbWithCustomLogs.v3.movies.getTopRated();
+    Map resultTv = await tmdbWithCustomLogs.v3.tv.getPopular();
+    setState(() {
+      trendingMovies = resultTrending['results'];
+      topMovies = resultTop['results'];
+      popularMovies = resultTv['results'];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
