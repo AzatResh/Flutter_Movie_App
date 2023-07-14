@@ -3,7 +3,8 @@ import 'package:tmdb_api/tmdb_api.dart';
 
 import 'api_key.dart';
 
-import 'package:flutter_movie/widgets/trendingMovies.dart';
+import 'package:flutter_movie/widgets/scrollMovieSection.dart';
+import 'package:flutter_movie/widgets/tvSection.dart';
 
 void main() {
   runApp(const MyApp());
@@ -38,11 +39,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List trendingMovies = new List.empty();
   List topMovies = new List.empty();
-  List popularMovies = new List.empty();
+  List tvMovies = new List.empty();
 
   @override
   initState(){
     loadMovies();
+
+    print('-');
+    print('-');
+    print('-');
+    print('-');
+    print(tvMovies);
     super.initState();
   }
   
@@ -61,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       trendingMovies = resultTrending['results'];
       topMovies = resultTop['results'];
-      popularMovies = resultTv['results'];
+      tvMovies = resultTv['results'];
     });
   }
 
@@ -73,7 +80,9 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: ListView(children: <Widget>[
-        TrendingMovies(trendingMovies: trendingMovies)
+        TVSection(tv: tvMovies),
+        ScrollMovieSection(movies: trendingMovies, title: 'Trending Movies',),
+        ScrollMovieSection(movies: topMovies, title: 'Top Movies',)
       ]
       )
     );

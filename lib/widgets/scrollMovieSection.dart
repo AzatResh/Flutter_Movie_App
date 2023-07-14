@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_movie/utils/text.dart';
+import 'package:flutter_movie/pages/movieAbout.dart';
 
-class TrendingMovies extends StatelessWidget{
+class ScrollMovieSection extends StatelessWidget{
 
-  final List trendingMovies;
+  final List movies;
+  final String title;
 
-  const TrendingMovies({super.key, required this.trendingMovies});
+  const ScrollMovieSection({super.key, required this.movies, required this.title});
   
   @override
   Widget build(BuildContext context) {
@@ -14,15 +16,19 @@ class TrendingMovies extends StatelessWidget{
       padding: EdgeInsets.all(10),
       child: Column(
         children: <Widget>[
-          ModifiedText(text: 'TrendingMovies', size: 26, color: Colors.white,),
+          ModifiedText(text: title, size: 26, color: Colors.white,),
           SizedBox(height: 10),
           Container(
             height: 270,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: trendingMovies.length,
+              itemCount: movies.length,
               itemBuilder: (context, index){
                 return InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: 
+                      (context) => MovieAbout(movie: movies[index],)));
+                  },
                   child: Container(
                     width: 140,
                     child: Column(
@@ -33,7 +39,7 @@ class TrendingMovies extends StatelessWidget{
                             image: DecorationImage(
                               image: NetworkImage(
                                  'https://image.tmdb.org/t/p/w500' +
-                                          trendingMovies[index]['poster_path']
+                                          movies[index]['poster_path']
                               ))
                           ),
                         ),
@@ -41,7 +47,7 @@ class TrendingMovies extends StatelessWidget{
                         Container(
                           child: ModifiedText(
                             size: 15,
-                            text: trendingMovies[index]['title'] != null ? trendingMovies[index]['title']: (trendingMovies[index]['name']!=null ? trendingMovies[index]['name'] : 'Loading'),
+                            text: movies[index]['title'] != null ? movies[index]['title']: (movies[index]['name']!=null ? movies[index]['name'] : 'Loading'),
                             color: Colors.white,)
                         )
                       ],
