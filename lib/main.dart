@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:tmdb_api/tmdb_api.dart';
 
 import 'api_key.dart';
+
+import 'package:flutter_movie/widgets/trendingMovies.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -52,9 +55,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
 
-    Map resultTrending = await tmdbWithCustomLogs.v3.trending.getTrending(mediaType: MediaType.all, timeWindow: TimeWindow.day);
-    Map resultTop = await tmdbWithCustomLogs.v3.movies.getTopRated();
-    Map resultTv = await tmdbWithCustomLogs.v3.tv.getPopular();
+    Map resultTrending = await tmdbWithCustomLogs.v3.trending.getTrending(mediaType: MediaType.all, timeWindow: TimeWindow.day, language: 'ru');
+    Map resultTop = await tmdbWithCustomLogs.v3.movies.getTopRated(language: 'ru');
+    Map resultTv = await tmdbWithCustomLogs.v3.tv.getPopular(language: 'ru');
     setState(() {
       trendingMovies = resultTrending['results'];
       topMovies = resultTop['results'];
@@ -69,8 +72,9 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.green,
         title: Text(widget.title),
       ),
-      body: Container(
-
+      body: ListView(children: <Widget>[
+        TrendingMovies(trendingMovies: trendingMovies)
+      ]
       )
     );
   }
