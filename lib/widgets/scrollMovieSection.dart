@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_movie/utils/text.dart';
-import 'package:flutter_movie/pages/movieAbout.dart';
+import 'package:flutter_movie/screens/movieAbout.dart';
 
 class ScrollMovieSection extends StatelessWidget{
 

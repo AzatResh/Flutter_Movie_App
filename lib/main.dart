@@ -5,6 +5,7 @@ import 'api_key.dart';
 
 import 'package:flutter_movie/widgets/scrollMovieSection.dart';
 import 'package:flutter_movie/widgets/tvSection.dart';
+import 'package:flutter_movie/navigation/bottomNavBar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -44,12 +45,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   initState(){
     loadMovies();
-
-    print('-');
-    print('-');
-    print('-');
-    print('-');
-    print(tvMovies);
     super.initState();
   }
   
@@ -79,12 +74,9 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.green,
         title: Text(widget.title),
       ),
-      body: ListView(children: <Widget>[
-        TVSection(tv: tvMovies),
-        ScrollMovieSection(movies: trendingMovies, title: 'Trending Movies',),
-        ScrollMovieSection(movies: topMovies, title: 'Top Movies',)
-      ]
-      )
+      body: Container(
+        child: BottomNavBar(),
+      ) 
     );
   }
 }
