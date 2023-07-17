@@ -7,8 +7,9 @@ class ScrollMovieSection extends StatelessWidget{
 
   final List movies;
   final String title;
+  final Icon icon;
 
-  const ScrollMovieSection({super.key, required this.movies, required this.title});
+  const ScrollMovieSection({super.key, required this.movies, required this.icon, required this.title});
   
   @override
   Widget build(BuildContext context) {
@@ -16,10 +17,19 @@ class ScrollMovieSection extends StatelessWidget{
       padding: EdgeInsets.all(10),
       child: Column(
         children: <Widget>[
-          ModifiedText(text: title, size: 26, color: Colors.white,),
+          Container(
+            margin: EdgeInsets.only(left: 15),
+            child: Row(
+              children: <Widget>[
+                icon,
+                SizedBox(width: 10,),
+                ModifiedText(text: title, size: 15, fontWeight: FontWeight.bold, color: const Color.fromARGB(255, 223, 223, 223),)
+              ],
+            ),
+          ),
           SizedBox(height: 10),
           Container(
-            height: 270,
+            height: 260,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: movies.length,
@@ -30,13 +40,16 @@ class ScrollMovieSection extends StatelessWidget{
                       (context) => MovieAbout(movie: movies[index],)));
                   },
                   child: Container(
+                    margin: EdgeInsets.only(right: 20),
                     width: 140,
                     child: Column(
                       children: [
                         Container(
                           height: 200,
                           decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
                             image: DecorationImage(
+                              fit: BoxFit.cover,
                               image: NetworkImage(
                                  'https://image.tmdb.org/t/p/w500' +
                                           movies[index]['poster_path']
@@ -45,10 +58,13 @@ class ScrollMovieSection extends StatelessWidget{
                         ),
                         SizedBox(height: 5),
                         Container(
-                          child: ModifiedText(
-                            size: 15,
-                            text: movies[index]['title'] != null ? movies[index]['title']: (movies[index]['name']!=null ? movies[index]['name'] : 'Loading'),
-                            color: Colors.white,)
+                          child: Text(
+                             movies[index]['title'] != null ? 
+                              movieTitle(movies[index]['title'], 26): (movies[index]['name']!=null ? 
+                              movieTitle(movies[index]['name'], 26) : 'Loading'),
+                            style: TextStyle(fontSize: 15, color: Colors.white,),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,)
                         )
                       ],
                     ),
@@ -59,9 +75,14 @@ class ScrollMovieSection extends StatelessWidget{
           )
         ],
       )
-
-
     );
   }
 
+
+  String movieTitle(String title, int maxLength){
+    if(title.length > maxLength){
+      return '${title.substring(0, maxLength-1)}...';
+    }
+    return title;
+  }
 }
