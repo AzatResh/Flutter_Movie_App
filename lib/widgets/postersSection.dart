@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_movie/screens/movieAbout.dart';
 import 'package:flutter_movie/utils/text.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 
@@ -93,6 +94,8 @@ class PosterSectionState extends State<PosterSection>{
         transform: matrix,
         child: InkWell(
           onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: 
+              (context) => MovieAbout(movie: widget.movies[index],)));
           },
           child: Container(
             margin: EdgeInsets.all(10),

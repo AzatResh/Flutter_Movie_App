@@ -3,6 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_movie/utils/text.dart';
+import 'package:flutter_movie/widgets/scrollMovieSection.dart';
 import 'package:tmdb_api/tmdb_api.dart';
 import 'package:flutter_movie/widgets/postersSection.dart';
 
@@ -64,39 +65,14 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               PosterSection(movies: _trendingMovies),
-              SizedBox(height: 30,),
+              SizedBox(height: 10,),
 
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    child: Row(
-                      children: <Widget>[
-                        Icon(CupertinoIcons.play_circle),
-                        SizedBox(width: 10,),
-                        ModifiedText(text: "Now Playing", size: 15, fontWeight: FontWeight.bold,)
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(height: 30,),
+              
+              ScrollMovieSection(movies: _nowPlayingMovies, icon: Icon(CupertinoIcons.play_circle, color: const Color.fromARGB(255, 223, 223, 223),), title: "Now Playing"),
+              
 
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    child: Row(
-                      children: <Widget>[
-                        Icon(CupertinoIcons.play_circle),
-                        SizedBox(width: 10,),
-                        ModifiedText(text: "Now Playing", size: 15, fontWeight: FontWeight.bold,)
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(height: 30,),
+              ScrollMovieSection(movies: _ComingSoonMovies, icon: Icon(CupertinoIcons.calendar, color: const Color.fromARGB(255, 223, 223, 223),), title: "Coming soon"),
+              SizedBox(height: 10,),
             ]),
         ),)
     );
