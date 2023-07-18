@@ -2,7 +2,6 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_movie/utils/text.dart';
 import 'package:flutter_movie/widgets/scrollMovieSection.dart';
 import 'package:tmdb_api/tmdb_api.dart';
 import 'package:flutter_movie/widgets/postersSection.dart';
@@ -17,11 +16,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late List _trendingMovies, _topMovies, _nowPlayingMovies, _ComingSoonMovies;
+  late List _trendingMovies, _nowPlayingMovies, _comingSoonMovies;
 
   @override
   initState(){
-    _trendingMovies = _topMovies = _nowPlayingMovies = _ComingSoonMovies = [];
+    _trendingMovies = _nowPlayingMovies = _comingSoonMovies = [];
     loadMovies();
     super.initState();
   }
@@ -36,15 +35,13 @@ class _HomePageState extends State<HomePage> {
     );
 
     Map resultTrending = await tmdbWithCustomLogs.v3.trending.getTrending(mediaType: MediaType.all, timeWindow: TimeWindow.day, language: 'ru');
-    Map resultTop = await tmdbWithCustomLogs.v3.movies.getTopRated(language: 'ru');
     Map resultNowPlaying = await tmdbWithCustomLogs.v3.movies.getNowPlaying(language: 'ru');
     Map resultComingSoon = await tmdbWithCustomLogs.v3.movies.getUpcoming(language: 'ru');
     
     setState(() {
       _trendingMovies = resultTrending['results'];
-      _topMovies = resultTop['results'];
       _nowPlayingMovies = resultNowPlaying['results'];
-      _ComingSoonMovies = resultComingSoon['results'];
+      _comingSoonMovies = resultComingSoon['results'];
     });
   }
 
@@ -64,14 +61,18 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              PosterSection(movies: _trendingMovies),
-              SizedBox(height: 10,),
-
-              
-              ScrollMovieSection(movies: _nowPlayingMovies, icon: Icon(CupertinoIcons.play_circle, color: const Color.fromARGB(255, 223, 223, 223),), title: "Now Playing"),
-              
-
-              ScrollMovieSection(movies: _ComingSoonMovies, icon: Icon(CupertinoIcons.calendar, color: const Color.fromARGB(255, 223, 223, 223),), title: "Coming soon"),
+              PosterSection(
+                movies: _trendingMovies
+              ),
+              SizedBox(height: 10,),  
+              ScrollMovieSection(
+                movies: _nowPlayingMovies, 
+                icon: Icon(CupertinoIcons.play_circle, color: const Color.fromARGB(255, 223, 223, 223),), 
+                title: "Now Playing"),  
+              ScrollMovieSection(
+                movies: _comingSoonMovies, 
+                icon: Icon(CupertinoIcons.calendar, color: const Color.fromARGB(255, 223, 223, 223),), 
+                title: "Coming soon"),
               SizedBox(height: 10,),
             ]),
         ),)
