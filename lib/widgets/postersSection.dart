@@ -94,8 +94,8 @@ class PosterSectionState extends State<PosterSection>{
         transform: matrix,
         child: InkWell(
           onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: 
-              (context) => MovieAbout(movie: widget.movies[index],)));
+            Navigator.of(context, rootNavigator: true).push(
+              MaterialPageRoute(builder: (_) => MovieAbout(movie:widget.movies[index],)));
           },
           child: Container(
             margin: EdgeInsets.all(10),

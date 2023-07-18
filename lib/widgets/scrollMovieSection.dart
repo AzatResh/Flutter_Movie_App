@@ -36,8 +36,8 @@ class ScrollMovieSection extends StatelessWidget{
               itemBuilder: (context, index){
                 return InkWell(
                   onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: 
-                      (context) => MovieAbout(movie: movies[index],)));
+                    Navigator.of(context, rootNavigator: true).push(
+                      MaterialPageRoute(builder: (_) => MovieAbout(movie:movies[index],)));
                   },
                   child: Container(
                     margin: EdgeInsets.only(right: 20),
