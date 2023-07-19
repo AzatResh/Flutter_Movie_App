@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_movie/api_key.dart';
-import 'package:flutter_movie/screens/movieAbout.dart';
+import 'package:flutter_movie/screens/movieDetails.dart';
 import 'package:tmdb_api/tmdb_api.dart';
 
 class Popular extends StatefulWidget{
@@ -46,7 +46,7 @@ class PopularState extends State<Popular>{
             return GestureDetector(
               onTap: (){
                 Navigator.of(context, rootNavigator: true).push(
-                      MaterialPageRoute(builder: (_) => MovieAbout(movie:_topMovies[index],)));
+                      MaterialPageRoute(builder: (_) => MovieDetails(movie:_topMovies[index],)));
               },
               child: Container(
                   decoration: BoxDecoration(

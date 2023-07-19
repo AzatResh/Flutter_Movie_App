@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_movie/utils/text.dart';
-import 'package:flutter_movie/screens/movieAbout.dart';
+import 'package:flutter_movie/screens/movieDetails.dart';
 
 class ScrollMovieSection extends StatelessWidget{
 
@@ -37,7 +37,7 @@ class ScrollMovieSection extends StatelessWidget{
                 return InkWell(
                   onTap: (){
                     Navigator.of(context, rootNavigator: true).push(
-                      MaterialPageRoute(builder: (_) => MovieAbout(movie:movies[index],)));
+                      MaterialPageRoute(builder: (_) => MovieDetails(movie:movies[index],)));
                   },
                   child: Container(
                     margin: EdgeInsets.only(right: 20),

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_movie/api_key.dart';
-import 'package:flutter_movie/screens/movieAbout.dart';
+import 'package:flutter_movie/screens/movieDetails.dart';
 import 'package:tmdb_api/tmdb_api.dart';
 
 class Favourite extends StatefulWidget{
@@ -43,7 +43,7 @@ class FavouriteState extends State<Favourite>{
           return GestureDetector(
             onTap: (){
               Navigator.push(context, MaterialPageRoute(builder: 
-                (context) => MovieAbout(movie:_topMovies[index],)));
+                (context) => MovieDetails(movie:_topMovies[index],)));
             },
             child: Container(
                 decoration: BoxDecoration(
