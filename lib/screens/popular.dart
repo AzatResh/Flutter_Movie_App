@@ -19,6 +19,21 @@ class PopularState extends State<Popular>{
     loadMovies();
     super.initState();
   }
+  
+  Future<void> loadMovies() async {
+    TMDB tmdbWithCustomLogs = TMDB(
+    ApiKeys(tmdbApiKey, tmdbV4Key),
+    logConfig: const ConfigLogger(
+      showLogs: true,//must be true than only all other logs will be shown
+      showErrorLogs: true,
+      ),
+    );
+
+    Map resultTop = await tmdbWithCustomLogs.v3.movies.getTopRated(language: 'ru');
+    setState(() {
+      _topMovies = resultTop['results'];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,20 +77,5 @@ class PopularState extends State<Popular>{
         ),
       )
     );
-  }
-
-  Future<void> loadMovies() async {
-    TMDB tmdbWithCustomLogs = TMDB(
-    ApiKeys(tmdbApiKey, tmdbV4Key),
-    logConfig: const ConfigLogger(
-      showLogs: true,//must be true than only all other logs will be shown
-      showErrorLogs: true,
-      ),
-    );
-
-    Map resultTop = await tmdbWithCustomLogs.v3.movies.getTopRated(language: 'ru');
-    setState(() {
-      _topMovies = resultTop['results'];
-    });
   }
 }
