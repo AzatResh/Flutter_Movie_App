@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_movie/api_key.dart';
 import 'package:flutter_movie/utils/text.dart';
 import 'package:flutter_movie/widgets/starRating.dart';
+import 'package:tmdb_api/tmdb_api.dart';
 
 class MovieAbout extends StatefulWidget{
   final Map movie;
@@ -12,6 +14,30 @@ class MovieAbout extends StatefulWidget{
 }
 
 class MovieAboutState extends State<MovieAbout>{
+
+  List _movieCredits = [];
+
+  @override
+  initState(){
+    loadCredits();
+    super.initState();
+  }
+
+  loadCredits() async {
+    TMDB tmdbWithCustomLogs = TMDB(
+    ApiKeys(tmdbApiKey, tmdbV4Key),
+    logConfig: const ConfigLogger(
+      showLogs: true,//must be true than only all other logs will be shown
+      showErrorLogs: true,
+      ),
+    );
+
+    Map credits = await tmdbWithCustomLogs.v3.movies.getCredits(widget.movie['id']);
+    
+    setState(() {
+      _movieCredits = credits['cast'];
+    });
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -70,7 +96,7 @@ class MovieAboutState extends State<MovieAbout>{
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  SizedBox(height: 22,),
+                                  Spacer(flex: 6,),
                                   ModifiedText(
                                     text: widget.movie['title'] != null ? widget.movie['title']: (widget.movie['name']!=null ? widget.movie['name'] : 'Loading'), 
                                     size: 18,
@@ -90,7 +116,7 @@ class MovieAboutState extends State<MovieAbout>{
                                     ],),
                                   ModifiedText(text: 'Popularity: ' + widget.movie['popularity'].toString(), size: 15),
                                   ModifiedText(text: 'Date: ' + widget.movie['release_date'].toString(), size: 15),
-                                  Spacer(),
+                                  Spacer(flex: 5,),
                                 ],),),
                           ],)
                       ),
@@ -98,7 +124,7 @@ class MovieAboutState extends State<MovieAbout>{
                   ],
                 )),
               Container(
-                padding: const EdgeInsets.all(15),
+                padding: const EdgeInsets.fromLTRB(15, 5, 15, 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -167,6 +193,44 @@ class MovieAboutState extends State<MovieAbout>{
                     ),
                   ),
                 ],
+              ),
+              SizedBox(height: 15,),
+              Container(
+                padding: EdgeInsets.only(left: 15),
+                width: MediaQuery.of(context).size.width,
+                child: ModifiedText(text: "Каст:", size: 18, textAlign: TextAlign.left,),
+              ),
+              Container(
+                padding: EdgeInsets.all(10),
+                height: 210,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _movieCredits == null? 0: (_movieCredits.length>10? 10: _movieCredits.length),
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: EdgeInsets.only(right: 10),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            width: 100,
+                            height: 140,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(40.0),
+                              image: DecorationImage(
+                                image: NetworkImage(_movieCredits[index]['profile_path']!=null? 
+                                'https://image.tmdb.org/t/p/w500' + _movieCredits[index]['profile_path']: 'https://image.tmdb.org/t/p/w500//2Stnm8PQI7xHkVwINb4MhS7LOuR.jpg'),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10,),
+                          ModifiedText(text: _movieCredits[index]['character'], size: 10),
+                          ModifiedText(text: _movieCredits[index]['name'], size: 10)
+                        ],
+                      )
+                    );
+                  },
+                ),
               )
           ]
         )
