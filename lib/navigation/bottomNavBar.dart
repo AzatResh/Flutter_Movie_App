@@ -4,7 +4,7 @@ import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 import 'package:flutter_movie/screens/home.dart';
 import 'package:flutter_movie/screens/popular.dart';
-import 'package:flutter_movie/screens/settings.dart';
+import 'package:flutter_movie/screens/movie/settings.dart';
 import 'package:flutter_movie/screens/favourite.dart';
 
 class BottomNavBar extends StatelessWidget{
