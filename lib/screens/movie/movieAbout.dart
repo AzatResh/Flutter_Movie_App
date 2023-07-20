@@ -6,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_movie/utils/text.dart';
 import 'package:flutter_movie/widgets/starRating.dart';
 import 'package:flutter_movie/url.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class MovieAbout extends StatefulWidget{
   final Map movie;
@@ -18,11 +19,20 @@ class MovieAbout extends StatefulWidget{
 class MovieAboutState extends State<MovieAbout>{
 
   List _movieCredits = [];
+  String trailerYoutube = '';
+  late YoutubePlayerController _controller;
 
   @override
   initState(){
+    _controller = YoutubePlayerController(initialVideoId: '');
     loadCredits();
     super.initState();
+  }
+
+  @override
+  void dispose(){
+    _controller.dispose();
+    super.dispose();
   }
 
   Future<void> loadCredits() async {
@@ -33,8 +43,30 @@ class MovieAboutState extends State<MovieAbout>{
       final data = jsonDecode(response.body);
       if(!this.mounted) return;
       setState(() {
-      _movieCredits = data['cast'];
+        _movieCredits = data['cast'];
       });
+    } else{
+      throw Exception('Failed to load movies.');
+    }
+  }
+
+  Future<void> loadTrailer() async {
+    final url = Uri.parse(getTrailer(widget.movie['id']));
+    final response = await http.get(url);
+
+    if(response.statusCode == 200){
+      final data = jsonDecode(response.body);
+      if(!this.mounted) return;
+
+      List movieTrailer = data['results'];
+      for (Map trailer in movieTrailer) {
+        if (trailer['type'] == 'Trailer') {
+          setState(() {
+            trailerYoutube = trailer['key'];
+          });
+          break;
+        }
+      }
     } else{
       throw Exception('Failed to load movies.');
     }
@@ -48,6 +80,7 @@ class MovieAboutState extends State<MovieAbout>{
         valueListenable: Hive.box('myMovies').listenable(),
         builder: (context, box, child){
           return FutureBuilder(
+            future: loadTrailer(),
             builder:(context, snapshot) {
               final isMovieSaved = box.get(widget.movie['id']) != null;
               return SingleChildScrollView(
@@ -147,7 +180,17 @@ class MovieAboutState extends State<MovieAbout>{
                           height: 50,
                           width: 200,
                           child: ElevatedButton(
-                            onPressed: (){},
+                            onPressed: () async {
+                              const snackBar = SnackBar(
+                                  content: Text('Movie trailer not available'),
+                                  backgroundColor: CupertinoColors.systemRed,
+                                );
+                              if (trailerYoutube == '') {
+                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              } else {
+                                showMovieTrailerDialog(context);
+                              }
+                            },
                             style: ElevatedButton.styleFrom(
                               elevation: 5,
                               backgroundColor: Colors.transparent,
@@ -253,6 +296,43 @@ class MovieAboutState extends State<MovieAbout>{
         );
       }    
     ));
+  }
+
+  void showMovieTrailerDialog(BuildContext context) {
+    _controller = YoutubePlayerController(
+      initialVideoId: trailerYoutube,
+      flags: const YoutubePlayerFlags(
+        autoPlay: false,
+        mute: false,
+      ),
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.zero,
+          insetPadding: const EdgeInsets.all(10),
+          backgroundColor: Colors.transparent,
+          content: YoutubePlayer(
+            controller: _controller,
+            showVideoProgressIndicator: true,
+            bottomActions: [
+              CurrentPosition(),
+              ProgressBar(
+                isExpanded: true,
+                colors: const ProgressBarColors(
+                  playedColor: Colors.orange,
+                  handleColor: Colors.orangeAccent,
+                ),
+              ),
+              const PlaybackSpeedButton(),
+              FullScreenButton(),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
 
