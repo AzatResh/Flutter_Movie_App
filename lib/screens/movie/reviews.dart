@@ -24,6 +24,7 @@ class ReviewsState extends State<Reviews> {
     );
 
     Map reviews = await tmdbWithCustomLogs.v3.movies.getReviews(widget.movieId);
+    if (!this.mounted) return;
     setState(() {
       movieReviews = reviews['results'];
     });

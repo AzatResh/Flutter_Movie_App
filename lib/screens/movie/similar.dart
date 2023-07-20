@@ -32,6 +32,7 @@ class SimilarState extends State<Similar> {
     );
 
     Map result = await tmdbWithCustomLogs.v3.movies.getSimilar(widget.movieId);
+    if (!this.mounted) return;
     setState(() {
       movies = result['results'];
     });

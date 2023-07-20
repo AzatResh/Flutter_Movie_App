@@ -33,12 +33,13 @@ class MovieAboutState extends State<MovieDetails> with SingleTickerProviderState
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,
-          title: Text(widget.movie['title']),
+          title: Text(widget.movie['title'] != null ? widget.movie['title']: widget.movie['name']),
           leading: Builder(
             builder: (BuildContext context){
               return IconButton(
                 icon: Icon(CupertinoIcons.back),
                 onPressed: (){
+                  ScaffoldMessenger.of(context).clearSnackBars();
                   Navigator.of(context, rootNavigator: true).pop();
                 }, 
               );
