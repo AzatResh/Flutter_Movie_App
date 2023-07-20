@@ -1,10 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:flutter_movie/api_key.dart';
 import 'package:flutter_movie/screens/movieDetails.dart';
-import 'package:hive/hive.dart';
-import 'package:tmdb_api/tmdb_api.dart';
 
 class Favourite extends StatefulWidget{
   const Favourite({Key? key}) : super(key: key);

@@ -1,10 +1,11 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:flutter_movie/api_key.dart';
 import 'package:flutter_movie/utils/text.dart';
 import 'package:flutter_movie/widgets/starRating.dart';
-import 'package:tmdb_api/tmdb_api.dart';
+import 'package:flutter_movie/url.dart';
 
 class MovieAbout extends StatefulWidget{
   final Map movie;
@@ -24,21 +25,19 @@ class MovieAboutState extends State<MovieAbout>{
     super.initState();
   }
 
-  loadCredits() async {
-    TMDB tmdbWithCustomLogs = TMDB(
-    ApiKeys(tmdbApiKey, tmdbV4Key),
-    logConfig: const ConfigLogger(
-      showLogs: true,//must be true than only all other logs will be shown
-      showErrorLogs: true,
-      ),
-    );
+  Future<void> loadCredits() async {
+    final url = Uri.parse(getCredits(widget.movie['id']));
+    final response = await http.get(url);
 
-    Map credits = await tmdbWithCustomLogs.v3.movies.getCredits(widget.movie['id']);
-    
-    if (!this.mounted) return;
-    setState(() {
-      _movieCredits = credits['cast'];
-    });
+    if(response.statusCode == 200){
+      final data = jsonDecode(response.body);
+      if(!this.mounted) return;
+      setState(() {
+      _movieCredits = data['cast'];
+      });
+    } else{
+      throw Exception('Failed to load movies.');
+    }
   }
   
   @override

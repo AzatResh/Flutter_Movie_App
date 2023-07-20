@@ -14,7 +14,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  tmdb_api:
+  http: ^0.13.5
   google_fonts:
   persistent_bottom_nav_bar: ^5.0.2
   dots_indicator: ^2.1.0

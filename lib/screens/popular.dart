@@ -1,8 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_movie/api_key.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_movie/screens/movieDetails.dart';
-import 'package:tmdb_api/tmdb_api.dart';
+import 'package:flutter_movie/url.dart';
 
 class Popular extends StatefulWidget{
   const Popular({Key? key}) : super(key: key);
@@ -21,18 +22,17 @@ class PopularState extends State<Popular>{
   }
   
   Future<void> loadMovies() async {
-    TMDB tmdbWithCustomLogs = TMDB(
-    ApiKeys(tmdbApiKey, tmdbV4Key),
-    logConfig: const ConfigLogger(
-      showLogs: true,//must be true than only all other logs will be shown
-      showErrorLogs: true,
-      ),
-    );
+    final url = Uri.parse(getTopRated);
+    final responce = await http.get(url);
 
-    Map resultTop = await tmdbWithCustomLogs.v3.movies.getTopRated(language: 'ru');
-    setState(() {
-      _topMovies = resultTop['results'];
-    });
+    if(responce.statusCode == 200){
+      final data = jsonDecode(responce.body);
+      setState(() {
+        _topMovies = data['results'];
+      });
+    } else{
+      throw Exception('Failed to load movies.');
+    }
   }
 
   @override

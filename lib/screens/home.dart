@@ -1,12 +1,12 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_movie/widgets/scrollMovieSection.dart';
-import 'package:tmdb_api/tmdb_api.dart';
 import 'package:flutter_movie/widgets/postersSection.dart';
-
-import '../api_key.dart';
+import 'package:flutter_movie/url.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,28 +21,51 @@ class _HomePageState extends State<HomePage> {
   @override
   initState(){
     _trendingMovies = _nowPlayingMovies = _comingSoonMovies = [];
-    loadMovies();
+    _getTrendingMovies();
+    _getNowPlayingMovies();
+    _getComingSoonMovies();
     super.initState();
   }
   
-  loadMovies() async {
-    TMDB tmdbWithCustomLogs = TMDB(
-    ApiKeys(tmdbApiKey, tmdbV4Key),
-    logConfig: const ConfigLogger(
-      showLogs: true,//must be true than only all other logs will be shown
-      showErrorLogs: true,
-      ),
-    );
+  Future<void> _getTrendingMovies() async{
+    final url = Uri.parse(getTrending);
+    final response = await http.get(url);
+    if(response.statusCode == 200){
+      final data = jsonDecode(response.body);
+      setState(() {
+        _trendingMovies = data['results'];
+      });
+    } else {
+      throw Exception('Failed to load movies.');
+    }
+  }
 
-    Map resultTrending = await tmdbWithCustomLogs.v3.trending.getTrending(mediaType: MediaType.all, timeWindow: TimeWindow.day, language: 'ru');
-    Map resultNowPlaying = await tmdbWithCustomLogs.v3.movies.getNowPlaying(language: 'ru');
-    Map resultComingSoon = await tmdbWithCustomLogs.v3.movies.getUpcoming(language: 'ru');
-    
-    setState(() {
-      _trendingMovies = resultTrending['results'];
-      _nowPlayingMovies = resultNowPlaying['results'];
-      _comingSoonMovies = resultComingSoon['results'];
-    });
+  Future<void> _getNowPlayingMovies() async{
+    final url = Uri.parse(getNowPlaying);
+    final response = await http.get(url);
+
+    if(response.statusCode == 200){
+      final data = jsonDecode(response.body);
+      setState(() {
+        _nowPlayingMovies = data['results'];
+      });
+    } else {
+      throw Exception('Failed to load movies.');
+    }
+  }
+
+  Future<void> _getComingSoonMovies() async{
+    final url = Uri.parse(getUpcoming);
+    final response = await http.get(url);
+
+    if(response.statusCode == 200){
+      final data = jsonDecode(response.body);
+      setState(() {
+        _comingSoonMovies = data['results'];
+      });
+    } else {
+      throw Exception('Failed to load movies.');
+    }
   }
 
   @override

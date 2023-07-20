@@ -1,7 +1,8 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_movie/api_key.dart';
-import 'package:tmdb_api/tmdb_api.dart';
+import 'package:flutter_movie/url.dart';
 
 class Reviews extends StatefulWidget{
   final int movieId;
@@ -15,19 +16,19 @@ class ReviewsState extends State<Reviews> {
   List movieReviews = [];
   
   Future<void> loadReviews() async {
-    TMDB tmdbWithCustomLogs = TMDB(
-    ApiKeys(tmdbApiKey, tmdbV4Key),
-    logConfig: const ConfigLogger(
-      showLogs: true,//must be true than only all other logs will be shown
-      showErrorLogs: true,
-      ),
-    );
+    final url = Uri.parse(getReviews(widget.movieId));
+    final response = await http.get(url);
 
-    Map reviews = await tmdbWithCustomLogs.v3.movies.getReviews(widget.movieId);
-    if (!this.mounted) return;
-    setState(() {
-      movieReviews = reviews['results'];
-    });
+    if(response.statusCode == 200){
+      final data = jsonDecode(response.body);
+      if(!this.mounted) return;
+      setState(() {
+        movieReviews = data['results'];
+      });
+    }
+    else{
+      throw Exception('Failed to load movies.');
+    }
   }
 
   @override
