@@ -47,8 +47,8 @@ class FavouriteState extends State<Favourite>{
               itemBuilder:(context, index) {
                 return GestureDetector(
                   onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: 
-                      (context) => MovieDetails(movie:movies[index],)));
+                    Navigator.of(context, rootNavigator: true).push(
+                  MaterialPageRoute(builder: (_) => MovieDetails(movie: movies[index],)));
                   },
                   child: Container(
                       decoration: BoxDecoration(
