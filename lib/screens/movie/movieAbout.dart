@@ -51,24 +51,27 @@ class MovieAboutState extends State<MovieAbout>{
   }
 
   Future<void> loadTrailer() async {
-    final url = Uri.parse(getTrailer(widget.movie['id']));
-    final response = await http.get(url);
+    try{
+      final url = Uri.parse(getTrailer(widget.movie['id']));
+      final response = await http.get(url);
 
-    if(response.statusCode == 200){
-      final data = jsonDecode(response.body);
-      if(!this.mounted) return;
+      if(response.statusCode == 200){
+        final data = jsonDecode(response.body);
+        if(!this.mounted) return;
 
-      List movieTrailer = data['results'];
-      for (Map trailer in movieTrailer) {
-        if (trailer['type'] == 'Trailer') {
-          setState(() {
-            trailerYoutube = trailer['key'];
-          });
-          break;
+        List movieTrailer = data['results'];
+        for (Map trailer in movieTrailer) {
+          if (trailer['type'] == 'Trailer') {
+            setState(() {
+              trailerYoutube = trailer['key'];
+            });
+            break;
+          }
         }
-      }
-    } else{
-      throw Exception('Failed to load movies.');
+      } 
+    }
+    catch(_){
+      print(_);
     }
   }
   

@@ -24,11 +24,6 @@ class FavouriteState extends State<Favourite>{
       appBar: AppBar(
         title: const Text("My movies"),
         centerTitle: true,
-        actions: [
-          IconButton(onPressed: (){}, 
-            icon: const Icon(CupertinoIcons.search)
-          )
-        ],
       ),
       body: ValueListenableBuilder(
         valueListenable: Hive.box('myMovies').listenable(),
@@ -47,8 +42,8 @@ class FavouriteState extends State<Favourite>{
               itemBuilder:(context, index) {
                 return GestureDetector(
                   onTap: (){
-                    Navigator.of(context, rootNavigator: true).push(
-                  MaterialPageRoute(builder: (_) => MovieDetails(movie: movies[index],)));
+                    Navigator.push(context, MaterialPageRoute(builder: 
+                      (context) => MovieDetails(movie:movies[index],)));
                   },
                   child: Container(
                       decoration: BoxDecoration(
