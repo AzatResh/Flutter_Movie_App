@@ -18,3 +18,6 @@ String getReviews(int movie_id){
 String getTrailer(int movie_id){
   return 'https://api.themoviedb.org/3/movie/${movie_id}/videos?language=en&api_key='+tmdbApiKey;
 }
+String getSearch(String movieName){
+  return 'https://api.themoviedb.org/3/search/movie?query=${movieName}&language=en&api_key='+tmdbApiKey;
+}
