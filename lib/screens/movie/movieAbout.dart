@@ -149,7 +149,7 @@ class MovieAboutState extends State<MovieAbout>{
                                             SizedBox(width: 10,),
                                             StarRating(value: (widget.movie['vote_average']/2).toInt())
                                           ],),
-                                        const Row(
+                                        Row(
                                           children: <Widget>[
                                             ModifiedText(text: 'rating', size: 12, color: Colors.grey,),
                                             SizedBox(width: 10,),
